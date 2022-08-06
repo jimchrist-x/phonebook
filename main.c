@@ -11,6 +11,7 @@
 void line(int size); // prints a line to stdout
 void upper(char *buffer, short unsigned int size); // lowercase to uppercase
 void clear_buff();
+void remove_newline(char *buff, int size);
 struct time {
 	int seconds;
 	int minutes;
@@ -88,16 +89,39 @@ int main(int argc, char const *argv[])
 			time_ptr=localtime(&unix_time);
 			person->calendar.date.day=time_ptr->tm_mday;
 			person->calendar.date.month=time_ptr->tm_mon;
-			person->calendar.date.year=time_ptr->tm_year;
+			person->calendar.date.year=time_ptr->tm_year+1900;
 			person->calendar.time.seconds=time_ptr->tm_sec;
 			person->calendar.time.minutes=time_ptr->tm_min;
 			person->calendar.time.hours=time_ptr->tm_hour;
-			fseek(stdin, 0, SEEK_END);
+			remove_newline(person->name, NAME_SIZE);
+			remove_newline(person->description, DESC_SIZE);
+			remove_newline(person->job, JOB_SIZE);
+			remove_newline(person->phone_number, PHONE_SIZE);
+			remove_newline(person->work_number, PHONE_SIZE);
+			fseek(file, 0, SEEK_END);
 			fwrite(person, sizeof(REGISTER), 1, file);
 			break;
 		case 'C':
 			break;
 		case 'D':
+			fseek(file, 0, SEEK_SET);
+			
+			while (1) {
+				fread(person,sizeof(REGISTER), 1, file);
+				if (feof(file)) break;
+				line(LINE);
+				printf("\t%s\n", person->name);
+				line(LINE);
+				printf("Description: %s\n\n", person->description);
+				printf("Works as a/an %s\n", person->job);
+				line(LINE);
+				printf("Phone number: %s\n", person->phone_number);
+				printf("Work number: %s\n", person->work_number);
+				line(LINE);
+				printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+				printf("\n\n\n\n");
+			}
+			
 			break;
 		case 'E':
 			break;
@@ -125,4 +149,10 @@ void upper(char *buffer, short unsigned int size) {
 void clear_buff() {
 	char ch;
 	while ((ch = getchar()) != '\n' && ch != EOF);  
+}
+void remove_newline(char *buff, int size) {
+	for (int i=0;i<size;i++) {
+		if (buff[i]=='\n')
+			buff[i]='\0';
+	}
 }
