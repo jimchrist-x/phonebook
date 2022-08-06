@@ -1,17 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include <string.h>
 
 #define LINE 30
 #define NAME_SIZE 100
 #define DESC_SIZE 300
 #define PHONE_SIZE 50
-#define JOB_SIZE 100 
+#define JOB_SIZE 100
+
+
 void line(int size); // prints a line to stdout
 void upper(char *buffer, short unsigned int size); // lowercase to uppercase
-void clear_buff();
+void clear_buff(); 
 void remove_newline(char *buff, int size);
+void delete_register(char *string, FILE *file, unsigned short int option);
 struct time {
 	int seconds;
 	int minutes;
@@ -34,15 +37,23 @@ struct register_ {
 	unsigned char work_number[PHONE_SIZE]; 
 	struct calendar calendar;
 };
+typedef struct register_ REGISTER;
 int main(int argc, char const *argv[])
 {
 	unsigned char option;
-	typedef struct register_ REGISTER;
 	REGISTER *person=malloc(sizeof(REGISTER));
 	FILE *file;
 	time_t unix_time;
 	struct tm *time_ptr;
+	unsigned char *buffer;
+
 	file=fopen("database.phonebook","ab+");
+
+
+	if (!person) {
+		fprintf(stderr, "Error allocating memory...");
+		exit(1);
+	}
 	if (!file) {
 		fprintf(stderr, "Error opening file...");
 		exit(1);
@@ -51,12 +62,12 @@ int main(int argc, char const *argv[])
 		line(LINE);
 		printf("\tCHOOSE OPTION\n");
 		line(LINE);
-		printf("A. READ REGISTER\n");
-		printf("B. WRITE REGISTER\n");
+		printf("A. READ REGISTER\n"); //DONE
+		printf("B. WRITE REGISTER\n"); //DONE
 		printf("C. DELETE REGISTER\n");
-		printf("D. LIST REGISTERS\n");
-		printf("E. SEARCH REGISTER\n");
-		printf("F. DELETE ALL\n");
+		printf("D. LIST REGISTERS\n"); //DONE
+		printf("E. SEARCH REGISTER\n"); 
+		printf("F. DELETE ALL\n"); //Done
 		printf("==>");
 		scanf("%c",&option);
 		upper(&option, 1);
@@ -102,6 +113,52 @@ int main(int argc, char const *argv[])
 			fwrite(person, sizeof(REGISTER), 1, file);
 			break;
 		case 'C':
+			do {
+				line(LINE);
+				printf("\tCHOOSE OPTION\n");
+				line(LINE);
+				printf("A. DELETE BY NAME\n");
+				printf("B. DELETE BY JOB\n");
+				printf("C. DELETE BY PHONE NUMBER\n");
+				printf("D. DELETE BY WORK NUMBER\n");
+				printf("==>");
+				scanf("%c",&option);
+				upper(&option, 1);
+				system("clear");
+				clear_buff();
+			} while(option<'A' || option>'D');
+			switch(option) {
+				case 'A':
+					buffer=malloc(sizeof(unsigned char)*NAME_SIZE);
+					printf("NAME|>");
+					fgets(buffer, NAME_SIZE, stdin);
+					remove_newline(buffer, NAME_SIZE);
+					delete_register(buffer, file, 1);
+					break;
+				case 'B':
+					buffer=malloc(sizeof(unsigned char)*JOB_SIZE);
+					printf("JOB|>");
+					fgets(buffer, JOB_SIZE, stdin);
+					remove_newline(buffer, JOB_SIZE);
+					delete_register(buffer, file, 2);
+					break;
+				case 'C':
+					buffer=malloc(sizeof(unsigned char)*PHONE_SIZE);
+					printf("PHONE|>");
+					fgets(buffer, PHONE_SIZE, stdin);
+					remove_newline(buffer, PHONE_SIZE);
+					delete_register(buffer, file, 3);
+					break;
+				case 'D':
+					buffer=malloc(sizeof(unsigned char)*PHONE_SIZE);
+					printf("WORK PHONE|>");
+					fgets(buffer, PHONE_SIZE, stdin);
+					remove_newline(buffer, PHONE_SIZE);
+					delete_register(buffer, file, 4);
+					break;
+				default:
+					break;
+			}
 			break;
 		case 'D':
 			fseek(file, 0, SEEK_SET);
@@ -119,13 +176,14 @@ int main(int argc, char const *argv[])
 				printf("Work number: %s\n", person->work_number);
 				line(LINE);
 				printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
-				printf("\n\n\n\n");
+				printf("\n");
 			}
 			
 			break;
 		case 'E':
 			break;
 		case 'F':
+				remove("database.phonebook");
 			break;
 		default:
 			break;
@@ -134,6 +192,9 @@ int main(int argc, char const *argv[])
 	fclose(file);
 	return 0;
 }
+
+
+
 void line(int size) {
 	for (int i=0;i<size;i++) {
 		printf("=");
@@ -155,4 +216,65 @@ void remove_newline(char *buff, int size) {
 		if (buff[i]=='\n')
 			buff[i]='\0';
 	}
+}
+void delete_register(char *string, FILE *file, unsigned short int option) {
+	REGISTER *person=malloc(sizeof(REGISTER));
+	FILE *temp_file;
+	temp_file=fopen("temp.phonebook", "w");
+	fseek(temp_file, 0, SEEK_SET);
+	fseek(file, 0, SEEK_SET);
+	while(1) {
+		fread(person, sizeof(REGISTER), 1, file);
+		if (feof(file)) {
+			break;
+		}
+		switch(option) {
+			case 1:
+				if (!strcmp(person->name, string)) {
+					printf("Found register!\nDeleting by name...\n");
+					continue;
+				}
+				else {
+					fwrite(person, sizeof(REGISTER), 1, temp_file);
+				}
+				break;
+			case 2:
+				if (!strcmp(person->job, string)) {
+					printf("Found register!\nDeleting by job...\n");
+					continue;
+				}
+				else {
+					fwrite(person, sizeof(REGISTER), 1, temp_file);
+				}
+				break;
+			case 3:
+				if (!strcmp(person->phone_number, string)) {
+					printf("Found register!\nDeleting by phone...\n");
+					continue;
+				}
+				else {
+					fwrite(person, sizeof(REGISTER), 1, temp_file);
+				}
+				break;
+			case 4:
+				if (!strcmp(person->work_number, string)) {
+					printf("Found register!\nDeleting by work phone...\n");
+					continue;
+				}
+				else {
+					fwrite(person, sizeof(REGISTER), 1, temp_file);
+				}
+				break;
+			default:
+				break;
+		}	
+		
+		
+	}
+	fclose(file);
+	fclose(temp_file);
+	remove("database.phonebook");
+	rename("temp.phonebook", "database.phonebook");
+	free(string);
+	exit(0);
 }
