@@ -15,6 +15,7 @@ void upper(char *buffer, short unsigned int size); // lowercase to uppercase
 void clear_buff(); 
 void remove_newline(char *buff, int size);
 void delete_register(char *string, FILE *file, unsigned short int option);
+void find_register(char *string, FILE *file, unsigned short int option);
 struct time {
 	int seconds;
 	int minutes;
@@ -62,12 +63,11 @@ int main(int argc, char const *argv[])
 		line(LINE);
 		printf("\tCHOOSE OPTION\n");
 		line(LINE);
-		printf("A. READ REGISTER\n"); //DONE
+		printf("A. SEARCH REGISTER\n"); //DONE
 		printf("B. WRITE REGISTER\n"); //DONE
-		printf("C. DELETE REGISTER\n");
+		printf("C. DELETE REGISTER\n"); //DONE
 		printf("D. LIST REGISTERS\n"); //DONE
-		printf("E. SEARCH REGISTER\n"); 
-		printf("F. DELETE ALL\n"); //Done
+		printf("E. DELETE ALL\n"); //Done
 		printf("==>");
 		scanf("%c",&option);
 		upper(&option, 1);
@@ -76,6 +76,68 @@ int main(int argc, char const *argv[])
 	} while (option<'A' || option>'Z');
 	switch(option) {
 		case 'A':
+			do {
+				line(LINE);
+				printf("\tCHOOSE OPTION\n");
+				line(LINE);
+				printf("A. SEARCH BY NAME\n");
+				printf("B. SEARCH BY JOB\n");
+				printf("C. SEARCH BY PHONE NUMBER\n");
+				printf("D. SEARCH BY WORK NUMBER\n");
+				printf("==>");
+				scanf("%c",&option);
+				upper(&option, 1);
+				system("clear");
+				clear_buff();
+			} while(option<'A' || option>'D');
+			switch(option) {
+				case 'A':
+					buffer=malloc(sizeof(unsigned char)*NAME_SIZE);
+					if (!buffer) {
+						printf("Error allocating memory...");
+						exit(1);
+					}
+					printf("NAME|>");
+					fgets(buffer, NAME_SIZE, stdin);
+					remove_newline(buffer, NAME_SIZE);
+					find_register(buffer, file, 1);
+					break;
+				case 'B':
+					buffer=malloc(sizeof(unsigned char)*JOB_SIZE);
+					if (!buffer) {
+						printf("Error allocating memory...");
+						exit(1);
+					}
+					printf("JOB|>");
+					fgets(buffer, JOB_SIZE, stdin);
+					remove_newline(buffer, JOB_SIZE);
+					find_register(buffer, file, 2);
+					break;
+				case 'C':
+					buffer=malloc(sizeof(unsigned char)*PHONE_SIZE);
+					if (!buffer) {
+						printf("Error allocating memory...");
+						exit(1);
+					}
+					printf("PHONE|>");
+					fgets(buffer, PHONE_SIZE, stdin);
+					remove_newline(buffer, PHONE_SIZE);
+					find_register(buffer, file, 3);
+					break;
+				case 'D':
+					buffer=malloc(sizeof(unsigned char)*PHONE_SIZE);
+					if (!buffer) {
+						printf("Error allocating memory...");
+						exit(1);
+					}
+					printf("WORK PHONE|>");
+					fgets(buffer, PHONE_SIZE, stdin);
+					remove_newline(buffer, PHONE_SIZE);
+					find_register(buffer, file, 4);
+					break;
+				default:
+					break;
+			}
 			break;
 		case 'B':
 			line(LINE);
@@ -130,6 +192,10 @@ int main(int argc, char const *argv[])
 			switch(option) {
 				case 'A':
 					buffer=malloc(sizeof(unsigned char)*NAME_SIZE);
+					if (!buffer) {
+						printf("Error allocating memory...");
+						exit(1);
+					}
 					printf("NAME|>");
 					fgets(buffer, NAME_SIZE, stdin);
 					remove_newline(buffer, NAME_SIZE);
@@ -137,6 +203,10 @@ int main(int argc, char const *argv[])
 					break;
 				case 'B':
 					buffer=malloc(sizeof(unsigned char)*JOB_SIZE);
+					if (!buffer) {
+						printf("Error allocating memory...");
+						exit(1);
+					}
 					printf("JOB|>");
 					fgets(buffer, JOB_SIZE, stdin);
 					remove_newline(buffer, JOB_SIZE);
@@ -144,6 +214,10 @@ int main(int argc, char const *argv[])
 					break;
 				case 'C':
 					buffer=malloc(sizeof(unsigned char)*PHONE_SIZE);
+					if (!buffer) {
+						printf("Error allocating memory...");
+						exit(1);
+					}
 					printf("PHONE|>");
 					fgets(buffer, PHONE_SIZE, stdin);
 					remove_newline(buffer, PHONE_SIZE);
@@ -151,6 +225,10 @@ int main(int argc, char const *argv[])
 					break;
 				case 'D':
 					buffer=malloc(sizeof(unsigned char)*PHONE_SIZE);
+					if (!buffer) {
+						printf("Error allocating memory...");
+						exit(1);
+					}
 					printf("WORK PHONE|>");
 					fgets(buffer, PHONE_SIZE, stdin);
 					remove_newline(buffer, PHONE_SIZE);
@@ -181,9 +259,7 @@ int main(int argc, char const *argv[])
 			
 			break;
 		case 'E':
-			break;
-		case 'F':
-				remove("database.phonebook");
+			remove("database.phonebook");
 			break;
 		default:
 			break;
@@ -275,6 +351,87 @@ void delete_register(char *string, FILE *file, unsigned short int option) {
 	fclose(temp_file);
 	remove("database.phonebook");
 	rename("temp.phonebook", "database.phonebook");
+	free(string);
+	exit(0);
+}
+void find_register(char *string, FILE *file, unsigned short int option) {
+	REGISTER *person=malloc(sizeof(REGISTER));
+	fseek(file, 0, SEEK_SET);
+	while(1) {
+		fread(person, sizeof(REGISTER), 1, file);
+		if (feof(file)) {
+			break;
+		}
+		switch(option) {
+			case 1:
+				if (!strcmp(person->name, string)) {
+					line(LINE);
+					printf("\t%s\n", person->name);
+					line(LINE);
+					printf("Description: %s\n\n", person->description);
+					printf("Works as a/an %s\n", person->job);
+					line(LINE);
+					printf("Phone number: %s\n", person->phone_number);
+					printf("Work number: %s\n", person->work_number);
+					line(LINE);
+					printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+					printf("\n");
+					continue;
+				}
+				break;
+			case 2:
+				if (!strcmp(person->job, string)) {
+					line(LINE);
+					printf("\t%s\n", person->name);
+					line(LINE);
+					printf("Description: %s\n\n", person->description);
+					printf("Works as a/an %s\n", person->job);
+					line(LINE);
+					printf("Phone number: %s\n", person->phone_number);
+					printf("Work number: %s\n", person->work_number);
+					line(LINE);
+					printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+					printf("\n");
+					continue;
+				}
+				break;
+			case 3:
+				if (!strcmp(person->phone_number, string)) {
+					line(LINE);
+					printf("\t%s\n", person->name);
+					line(LINE);
+					printf("Description: %s\n\n", person->description);
+					printf("Works as a/an %s\n", person->job);
+					line(LINE);
+					printf("Phone number: %s\n", person->phone_number);
+					printf("Work number: %s\n", person->work_number);
+					line(LINE);
+					printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+					printf("\n");
+					continue;
+				}
+				break;
+			case 4:
+				if (!strcmp(person->work_number, string)) {
+					line(LINE);
+					printf("\t%s\n", person->name);
+					line(LINE);
+					printf("Description: %s\n\n", person->description);
+					printf("Works as a/an %s\n", person->job);
+					line(LINE);
+					printf("Phone number: %s\n", person->phone_number);
+					printf("Work number: %s\n", person->work_number);
+					line(LINE);
+					printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+					printf("\n");
+					continue;
+				}
+				break;
+			default:
+				break;
+			}	
+	}
+	fclose(file);
 	free(string);
 	exit(0);
 }
