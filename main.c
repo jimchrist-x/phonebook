@@ -3,7 +3,7 @@
 #include <time.h>
 #include <string.h>
 
-#define LINE 30
+#define LINE 25
 #define NAME_SIZE 100
 #define DESC_SIZE 300
 #define PHONE_SIZE 50
@@ -61,13 +61,14 @@ int main(int argc, char const *argv[])
 	}
 	do {
 		line(LINE);
-		printf("\tCHOOSE OPTION\n");
+		printf("║     CHOOSE OPTION\t║\n");
 		line(LINE);
-		printf("A. SEARCH REGISTER\n"); //DONE
-		printf("B. WRITE REGISTER\n"); //DONE
-		printf("C. DELETE REGISTER\n"); //DONE
-		printf("D. LIST REGISTERS\n"); //DONE
-		printf("E. DELETE ALL\n"); //Done
+		printf("║ A. SEARCH REGISTER\t║\n"); //DONE
+		printf("║ B. WRITE REGISTER\t║\n"); //DONE
+		printf("║ C. DELETE REGISTER\t║\n"); //DONE
+		printf("║ D. LIST REGISTERS\t║\n"); //DONE
+		printf("║ E. DELETE ALL\t\t║\n"); //Done
+		line(LINE);
 		printf("==>");
 		scanf("%c",&option);
 		upper(&option, 1);
@@ -78,12 +79,13 @@ int main(int argc, char const *argv[])
 		case 'A':
 			do {
 				line(LINE);
-				printf("\tCHOOSE OPTION\n");
+				printf("║     CHOOSE OPTION\t║\n");
 				line(LINE);
-				printf("A. SEARCH BY NAME\n");
-				printf("B. SEARCH BY JOB\n");
-				printf("C. SEARCH BY PHONE NUMBER\n");
-				printf("D. SEARCH BY WORK NUMBER\n");
+				printf("║ A. SEARCH BY NAME\t║\n");
+				printf("║ B. SEARCH BY JOB\t║\n");
+				printf("║ C. SEARCH BY PHONE NUM║\n");
+				printf("║ D. SEARCH BY WORK NUM\t║\n");
+				line(LINE);
 				printf("==>");
 				scanf("%c",&option);
 				upper(&option, 1);
@@ -141,7 +143,7 @@ int main(int argc, char const *argv[])
 			break;
 		case 'B':
 			line(LINE);
-			printf("WRITE MODE\n");
+			printf("║      WRITE MODE\t║\n");
 			line(LINE);
 			printf("Name: ");
 			fgets(person->name, NAME_SIZE,stdin);
@@ -177,12 +179,13 @@ int main(int argc, char const *argv[])
 		case 'C':
 			do {
 				line(LINE);
-				printf("\tCHOOSE OPTION\n");
+				printf("║     CHOOSE OPTION\t║\n");
 				line(LINE);
-				printf("A. DELETE BY NAME\n");
-				printf("B. DELETE BY JOB\n");
-				printf("C. DELETE BY PHONE NUMBER\n");
-				printf("D. DELETE BY WORK NUMBER\n");
+				printf("║ A. DELETE BY NAME\t║\n");
+				printf("║ B. DELETE BY JOB\t║\n");
+				printf("║ C. DELETE BY PHONE NUM║\n");
+				printf("║ D. DELETE BY WORK NUM\t║\n");
+				line(LINE);
 				printf("==>");
 				scanf("%c",&option);
 				upper(&option, 1);
@@ -245,16 +248,14 @@ int main(int argc, char const *argv[])
 				fread(person,sizeof(REGISTER), 1, file);
 				if (feof(file)) break;
 				line(LINE);
-				printf("\t%s\n", person->name);
+				printf("║\t  %s\t\t║\n", person->name);
 				line(LINE);
-				printf("Description: %s\n\n", person->description);
-				printf("Works as a/an %s\n", person->job);
-				line(LINE);
-				printf("Phone number: %s\n", person->phone_number);
-				printf("Work number: %s\n", person->work_number);
-				line(LINE);
-				printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
-				printf("\n");
+				printf("║ Description: %s\n", person->description);
+				printf("║ Works as a/an %s\n", person->job);
+				printf("║ Phone number: %s\n", person->phone_number);
+				printf("║ Work number: %s\n", person->work_number);
+				printf("║ Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+				printf("\n║\n");
 			}
 			
 			break;
@@ -273,7 +274,7 @@ int main(int argc, char const *argv[])
 
 void line(int size) {
 	for (int i=0;i<size;i++) {
-		printf("=");
+		printf("═");
 	}
 	printf("\n");
 }
@@ -366,64 +367,54 @@ void find_register(char *string, FILE *file, unsigned short int option) {
 			case 1:
 				if (!strcmp(person->name, string)) {
 					line(LINE);
-					printf("\t%s\n", person->name);
+					printf("║\t  %s\t\t║\n", person->name);
 					line(LINE);
-					printf("Description: %s\n\n", person->description);
-					printf("Works as a/an %s\n", person->job);
-					line(LINE);
-					printf("Phone number: %s\n", person->phone_number);
-					printf("Work number: %s\n", person->work_number);
-					line(LINE);
-					printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
-					printf("\n");
+					printf("║ Description: %s\n", person->description);
+					printf("║ Works as a/an %s\n", person->job);
+					printf("║ Phone number: %s\n", person->phone_number);
+					printf("║ Work number: %s\n", person->work_number);
+					printf("║ Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+					printf("\n║\n");
 					continue;
 				}
 				break;
 			case 2:
 				if (!strcmp(person->job, string)) {
+					printf("║\t%s\t\t║\n", person->name);
+					printf("║ Description: %s\n", person->description);
+					printf("║ Works as a/an %s\n", person->job);
+					printf("║ Phone number: %s\n", person->phone_number);
+					printf("║ Work number: %s\n", person->work_number);
 					line(LINE);
-					printf("\t%s\n", person->name);
-					line(LINE);
-					printf("Description: %s\n\n", person->description);
-					printf("Works as a/an %s\n", person->job);
-					line(LINE);
-					printf("Phone number: %s\n", person->phone_number);
-					printf("Work number: %s\n", person->work_number);
-					line(LINE);
-					printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
-					printf("\n");
+					printf("║ Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+					printf("\n║\n");
 					continue;
 				}
 				break;
 			case 3:
 				if (!strcmp(person->phone_number, string)) {
 					line(LINE);
-					printf("\t%s\n", person->name);
+					printf("║\t%s\t\t║\n", person->name);
 					line(LINE);
-					printf("Description: %s\n\n", person->description);
-					printf("Works as a/an %s\n", person->job);
-					line(LINE);
-					printf("Phone number: %s\n", person->phone_number);
-					printf("Work number: %s\n", person->work_number);
-					line(LINE);
-					printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
-					printf("\n");
+					printf("║ Description: %s\n", person->description);
+					printf("║ Works as a/an %s\n", person->job);
+					printf("║ Phone number: %s\n", person->phone_number);
+					printf("║ Work number: %s\n", person->work_number);
+					printf("║ Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+					printf("\n║\n");
 					continue;
 				}
 				break;
 			case 4:
 				if (!strcmp(person->work_number, string)) {
 					line(LINE);
-					printf("\t%s\n", person->name);
-					line(LINE);
-					printf("Description: %s\n\n", person->description);
-					printf("Works as a/an %s\n", person->job);
-					line(LINE);
-					printf("Phone number: %s\n", person->phone_number);
-					printf("Work number: %s\n", person->work_number);
-					line(LINE);
-					printf("Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
-					printf("\n");
+					printf("║\t%s\t\t║\n", person->name);
+					printf("║ Description: %s\n", person->description);
+					printf("║ Works as a/an %s\n", person->job);
+					printf("║ Phone number: %s\n", person->phone_number);
+					printf("║ Work number: %s\n", person->work_number);
+					printf("║ Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
+					printf("\n║\n");
 					continue;
 				}
 				break;
