@@ -380,12 +380,13 @@ void find_register(char *string, FILE *file, unsigned short int option) {
 				break;
 			case 2:
 				if (!strcmp(person->job, string)) {
+					line(LINE);
 					printf("║\t%s\t\t║\n", person->name);
+					line(LINE);
 					printf("║ Description: %s\n", person->description);
 					printf("║ Works as a/an %s\n", person->job);
 					printf("║ Phone number: %s\n", person->phone_number);
 					printf("║ Work number: %s\n", person->work_number);
-					line(LINE);
 					printf("║ Registered at [%d/%d/%d] (%d:%d:%d)", person->calendar.date.day, person->calendar.date.month, person->calendar.date.year, person->calendar.time.hours, person->calendar.time.minutes, person->calendar.time.seconds);
 					printf("\n║\n");
 					continue;
@@ -409,6 +410,7 @@ void find_register(char *string, FILE *file, unsigned short int option) {
 				if (!strcmp(person->work_number, string)) {
 					line(LINE);
 					printf("║\t%s\t\t║\n", person->name);
+					line(LINE);
 					printf("║ Description: %s\n", person->description);
 					printf("║ Works as a/an %s\n", person->job);
 					printf("║ Phone number: %s\n", person->phone_number);
