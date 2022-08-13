@@ -100,13 +100,11 @@ int main(int argc, char const *argv[])
 					if (!buffer) {
 						printf("Error allocating memory...");
 						free(person);
-						free(buffer);
 						exit(1);
 					}
 					printf("NAME|>");
 					fgets(buffer, NAME_SIZE, stdin);
 					remove_newline(buffer, NAME_SIZE);
-					free(buffer);
 					find_register(buffer, file, 1);
 					break;
 				case 'B':
@@ -119,7 +117,6 @@ int main(int argc, char const *argv[])
 					printf("JOB|>");
 					fgets(buffer, JOB_SIZE, stdin);
 					remove_newline(buffer, JOB_SIZE);
-					free(buffer);
 					find_register(buffer, file, 2);
 					break;
 				case 'C':
@@ -132,7 +129,6 @@ int main(int argc, char const *argv[])
 					printf("PHONE|>");
 					fgets(buffer, PHONE_SIZE, stdin);
 					remove_newline(buffer, PHONE_SIZE);
-					free(buffer);
 					find_register(buffer, file, 3);
 					break;
 				case 'D':
@@ -145,7 +141,6 @@ int main(int argc, char const *argv[])
 					printf("WORK PHONE|>");
 					fgets(buffer, PHONE_SIZE, stdin);
 					remove_newline(buffer, PHONE_SIZE);
-					free(buffer);
 					find_register(buffer, file, 4);
 					break;
 				default:
@@ -214,7 +209,6 @@ int main(int argc, char const *argv[])
 					printf("NAME|>");
 					fgets(buffer, NAME_SIZE, stdin);
 					remove_newline(buffer, NAME_SIZE);
-					free(buffer);
 					delete_register(buffer, file, 1);
 					break;
 				case 'B':
@@ -227,7 +221,6 @@ int main(int argc, char const *argv[])
 					printf("JOB|>");
 					fgets(buffer, JOB_SIZE, stdin);
 					remove_newline(buffer, JOB_SIZE);
-					free(buffer);
 					delete_register(buffer, file, 2);
 					break;
 				case 'C':
@@ -240,7 +233,6 @@ int main(int argc, char const *argv[])
 					printf("PHONE|>");
 					fgets(buffer, PHONE_SIZE, stdin);
 					remove_newline(buffer, PHONE_SIZE);
-					free(buffer);
 					delete_register(buffer, file, 3);
 					break;
 				case 'D':
@@ -253,7 +245,6 @@ int main(int argc, char const *argv[])
 					printf("WORK PHONE|>");
 					fgets(buffer, PHONE_SIZE, stdin);
 					remove_newline(buffer, PHONE_SIZE);
-					free(buffer);
 					delete_register(buffer, file, 4);
 					break;
 				default:
